@@ -1,0 +1,21 @@
+{
+	"name" : "Spectoid",
+	"version" : 1,
+	"maps": [
+		"walk.json"
+	],
+	"screens" : {
+		"preload" : {
+			"title" : "Loading"
+		},
+		"home" : {
+			"title" : "Home"
+		},
+		"game" : {
+			"title" : "Game"		
+		},
+		"pause" : {
+			"title" : "Pause"
+		}
+	}		
+}

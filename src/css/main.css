@@ -1,0 +1,56 @@
+html, body {
+	
+}
+.collumn {
+	margin-left: auto;
+	margin-right: auto;
+	width: 960px;
+	text-align: left;
+	position:relative;
+}
+.collumn-wide {
+	margin-left: auto;
+	margin-right: auto;
+	width: 1200px;
+	text-align: left;
+	position:relative;
+}
+.collumn-auto {
+	margin-left: 10px;
+	margin-right: 10px;
+	text-align: left;
+	position:relative;
+}
+.block {
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+.codebox {
+	white-space:pre;
+	font-family:console, fixed, monospace;
+	font-size:80%;
+}
+#tiles {
+	text-align: center;
+}
+#footer {
+	text-align: center;
+}
+#footer a {
+	font-size:80%;
+	/*color: #777777;*/
+}
+canvas {
+	position:relative;
+	background-color: #383E45;
+}
+.center {
+	text-align: center;
+}
+#widescreen, #controls {
+	position:relative;
+}
+.hand {
+	cursor:hand;
+	cursor:pointer;
+}
