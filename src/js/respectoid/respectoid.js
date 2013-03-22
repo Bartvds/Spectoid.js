@@ -130,66 +130,141 @@ define(function()
 		this.compiled = false;
 		this.def.proto = null;
 		this.def.chain = appendChain(this.def, [this.def]);
-		var name;
-		var def = this.def;
+		
+		//closure
+		var that = this;
 		var constructors = [];
 		var props = [];
-		var bind = {};
-		var that = this;
-		def.proto = function(args)
+		var bind = [];
+		var init = this.def.init;
+		
+		this.def.proto = function (args)
 		{
-			var i, name;
-			for (name in props)
+			//comments for {{type}}
+			
+			var type;
+			//# echo type = #type#;
+			 
+			//# if props or constructors or bind
+			var i;
+			//# 	if constructors or bind
+			var ii;
+			//# 	end
+			//# end
+			
+			//# if props
+			for (i in props)
 			{
-				this[name] = props[name];
+				this[i] = props[i];
 			}
-			/*if (params)
-			{
-				for (name in params)
-				{
-					this[name] = params[name];
-				}
-			}*/
-			for (i = 0; i < constructors.length; i++)
+			//# end
+			//# if constructors
+			for (i = 0, ii = constructors.length; i < ii; i++)
 			{
 				constructors[i].call(this);
 			}
-			for (name in bind)
+			//# end
+			//# if bind
+			for (i = 0, ii = bind.length; i < ii; i++)
 			{
-				this[name] = bindTo(this[name], this);
+				this[bind[i]] = bindTo(this[bind[i]], this);
 			}
-			if (def.init)
+			//# end
+			//# if init
+			if(init) 
 			{
 				if (arguments.length > 1)
 				{
 					args = arguments;
 				}
-				def.init.apply(this, args);
+				init.apply(this, args);
 			}
+			//# end
 		};
 		
-		addDef(def, def, props, bind);
+		var scope = {};
+		scope.constructors = constructors;
+		scope.props = props;
+		scope.bind = bind;
+		scope.init = init;
+		scope.bindTo = bindTo;
 		
-		def.chain.forEach(function(sup, i)
+		var macroTypes = {};
+		//var trimSplitEx = /[\s]*[\n\r]+[\s]*/g
+		var trimSplitEx = /[\n\r]+/g
+		var directiveEx = /^[ \t]*\/\/#[ \t]*([\w-]+)[ \t]*([\S \t]*)$/g
+		
+		var macro = function(func, scope)
 		{
+			var lines = ('('+func.toString()+')').split(trimSplitEx);
+			
+			var body = [];
+			
+			for (var i = 0, ii = lines.length; i < ii; i++)
+			{
+				var line = lines[i];
+				var match = directiveEx.exec(line);
+				if (match)
+				{
+					//console.log([match]);
+					var op = null, params = null;
+					if (match.length > 1)
+					{
+						op = match[1];
+						if (match.length > 2)
+						{
+							params = match[2];
+						}
+						console.log([op, params]);
+						
+						
+						continue;
+					}
+					else
+					{
+						//compile.append(line);
+					}
+				}
+				body.push(line);
+			}
+			
+			console.log(lines);
+			
+			
+			var closure;
+			//yieayaah! with + eval
+			with(scope)
+			{
+				closure = eval(body.join('\n'));
+			}
+			return closure;
+		};
+		this.def.proto = macro(this.def.proto, scope);
+		
+		console.log(this.def.proto.toString());
+		
+		var sup;
+		addDefParts(this.def, this.def.proto, props, bind);
+		for (i = 0, ii = this.def.chain.length; i < ii; i++)
+		{
+			sup = this.def.chain[i];
 			if (sup.constr)
 			{
 				constructors.push(sup.constr);
 			}
-			addDef(def, sup, props, bind);
-		});
+			addDefParts(sup, this.def.proto, props, bind);
+		};
 		this.compiled = true;
 		console.log(['Def.compile done', this.def.type, this]);
 		return this.compiled;
-	};	
-	var bindTo = function(func, scope)
-	{
-		return function()
-		{
-			return func.apply(scope, arguments);
-		};
 	};
-	var addDef = function(to, def, props, bind)
+	
+	var Stack = function()
+	{
+		
+	};
+	//loose utils
+	var addDefParts = function(def, to, props, bind)
 	{
 		var i, name;
 		if (def.props)
@@ -203,15 +278,18 @@ define(function()
 		{
 			for (name in def.bind)
 			{
-				bind[name] = null;
-				to.proto.prototype[name] = def.bind[name];
+				if (typeof def.bind[name] !== 'function') throw new Error('cannot bind a non-function ' + def.type + ' ' + name + ' ' + this.type);
+					
+				if (bind.indexOf(name) < 0) bind.push(name);
+				//put on prototype
+				to.prototype[name] = def.bind[name];
 			}
 		}
 		if (def.members)
 		{
 			for (name in def.members)
 			{
-				to.proto.prototype[name] = def.members[name];
+				to.prototype[name] = def.members[name];
 			}
 		}
 	};
@@ -251,6 +329,18 @@ define(function()
 			});
 		}
 		return chain;
+	};
+	var bindTo = function(func, scope)
+	{
+		return function()
+		{
+			return func.apply(scope, arguments);
+		};
+	};
+	var optimize = function(func, vars)
+	{
+		var src = func.toString();
+		
 	};
 	
 	return expose;

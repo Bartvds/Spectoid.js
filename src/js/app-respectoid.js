@@ -13,7 +13,7 @@ require(['lib/easel', 'lib/preload', 'lib/stats', 'lib/domReady!'], function(eas
 	{
 		console.log('spectoid loaded');
 		
-		respectoid.compile();
+		//respectoid.compile();
 		
 		var pos = common.Display.create(5, 10);
 		console.log(pos);
