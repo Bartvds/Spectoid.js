@@ -9,11 +9,11 @@ require(['lib/easel', 'lib/preload', 'lib/stats', 'lib/domReady!'], function(eas
 {
 	
 	require(['respectoid/respectoid', 'respectoid/common', 'lib/text!../data/config.json'], 
-	function(respectoid)
+	function(respectoid, common)
 	{
 		console.log('spectoid loaded');
 		
-		var pos = respectoid('common.Display').create();
+		var pos = common.Display.create(5, 10);
 		console.log(pos);
 		
 		

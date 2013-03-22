@@ -4,7 +4,7 @@ define(function()
 	var expose;
 	
 	//make main value
-	var type = expose = function(type)
+	var type = expose = function(type, expose)
 	{
 		if (type in types)
 		{
@@ -12,6 +12,13 @@ define(function()
 		}
 		var def = new DefType(type);		
 		types[type] = def;
+		
+		if (expose)
+		{
+			var short = type.match(/[\w-]+$/);
+			short = short.length > 0 ? short[short.length-1] : type
+			expose[short] = def;
+		}
 		return def;
 	};
 	var compile = expose.compile = function()
@@ -22,11 +29,6 @@ define(function()
 			if(!def.compiled) def.compile();
 			if(!def.compiled) throw new Error('error compiling type ' + type);
 		}
-	};
-	var create = expose.create = function(type, params)
-	{
-		if (!(type in types)) throw new Error('undefined type ' + type);
-		return types[type].create(params);
 	};
 	
 	var Def = function(type)
@@ -77,6 +79,12 @@ define(function()
 		this.def.constr = constr;
 		return this;
 	};
+	DefType.prototype.init = function(init)
+	{
+		if (this.compiled) throw new Error('type compiled, cannot modify ' + this.type);
+		this.def.init = init;
+		return this;
+	};
 	DefType.prototype.prop = function(props)
 	{
 		if (this.compiled) throw new Error('type compiled, cannot modify ' + this.type);
@@ -107,11 +115,11 @@ define(function()
 		}
 		return this;
 	};
-	DefType.prototype.create = function(params)
+	DefType.prototype.create = function()
 	{
 		if (this.compiled || this.compile())
 		{
-			return new this.def.proto(params);
+			return new this.def.proto(arguments);
 		}
 		return null;
 	};
@@ -128,28 +136,29 @@ define(function()
 		var props = [];
 		var bind = {};
 		var that = this;
-		def.proto = function(params)
+		def.proto = function(args)
 		{
 			var i, name;
 			for (name in props)
 			{
 				this[name] = props[name];
 			}
-			for (i = 0; i < constructors.length; i++)
-			{
-				constructors[i].call(this);
-			}
-			if (params)
+			/*if (params)
 			{
 				for (name in params)
 				{
 					this[name] = params[name];
 				}
+			}*/
+			for (i = 0; i < constructors.length; i++)
+			{
+				constructors[i].call(this);
 			}
 			for (name in bind)
 			{
 				this[name] = bindTo(this[name], this);
 			}
+			if (def.init) def.init.apply(this, args);
 		};
 		
 		addDef(def, def, props, bind);
