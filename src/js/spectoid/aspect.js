@@ -59,7 +59,7 @@ define(function(){
 	};
 	Aspect.prototype.compile = function()
 	{
-		console.log(['Aspect.compile']);
+		//console.log(['Aspect.compile']);
 		var i;
 		var ind;
 		this._filter = [];
@@ -71,11 +71,11 @@ define(function(){
 			ind = this._world.getComponentIndex(this._have[i]);
 			if (ind < 0)
 			{
-				console.log(['cannot resolve '+this._have[i].type]);
+				//console.log(['cannot resolve '+this._have[i].type]);
 				this._recompile = true;
 				return false;
 			}
-			console.log(['have ', this._have[i].type, ind]);
+			//console.log(['have ', this._have[i].type, ind]);
 			this._filter.push(ind, 1);
 			this._uses.push(this._have[i].type);
 		}
@@ -84,11 +84,11 @@ define(function(){
 			ind = this._world.getComponentIndex(this._not[i]);
 			if (ind < 0)
 			{
-				console.log(['cannot resolve '+this._not[i].type]);
+				//console.log(['cannot resolve '+this._not[i].type]);
 				this._recompile = true;
 				return false;
 			}
-			console.log(['not ', this._not[i].type, ind]);
+			//console.log(['not ', this._not[i].type, ind]);
 			this._filter.push(ind, -1);	
 			this._uses.push(this._have[i].type);
 		}
@@ -119,7 +119,7 @@ define(function(){
 			{
 				if (!e._components[ind])
 				{
-					console.log(['skip on missing ', e._components[ind]]);
+					//console.log(['skip on missing ', e._components[ind]]);
 					return false;
 				}
 			}
@@ -127,7 +127,7 @@ define(function(){
 			{
 				if (e._components[ind])
 				{
-					console.log(['skip on got ', e._components[ind]]);
+					//console.log(['skip on got ', e._components[ind]]);
 					return false;
 				}
 			}

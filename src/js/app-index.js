@@ -7,6 +7,7 @@ requirejs.config({
 });
 require(['lib/easel', 'lib/preload', 'lib/stats', 'lib/domReady!'], function(easel)
 {
+	
 	require(['spectoid/spectoid', 'spectoid/common', 'spectoid/easel', 'spectoid/geom', 'lib/text!../data/config.json'], 
 	function(spectoid, common, easelMod, geom, config)
 	{

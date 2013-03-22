@@ -70,7 +70,7 @@ define(['spectoid/core'], function(core){
 		{
 			i = this._componentTypes.push(component.type) - 1;
 			this._componentMap[component.type] = component.constructor;
-			console.log(['newtype', i, component.type]);
+			//console.log(['new type', i, component.type]);
 		}
 		//no gaps (better use a single splice?)
 		while (e._components.length < this._componentTypes.length)
