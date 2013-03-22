@@ -11,6 +11,10 @@ define(['respectoid/respectoid'], function(respectoid)
 		this.uid = (++uid);
 	});
 	
+	respectoid('common.ID').prop({id:null}).init(function(id){
+		this.id = id;
+	});
+	
 	respectoid('common.Point').prop({x:0, y:0}).init(function(x, y){
 		this.x = x || 0;
 		this.y = y || 0;		
@@ -22,8 +26,7 @@ define(['respectoid/respectoid'], function(respectoid)
 		}
 	});
 	
-	respectoid('common.Name').extend('common.UID').constr(function()
-	{
+	respectoid('common.Name').extend('common.UID').constr(function() {
 		this.name = '';
 	});
 	

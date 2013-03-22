@@ -158,7 +158,14 @@ define(function()
 			{
 				this[name] = bindTo(this[name], this);
 			}
-			if (def.init) def.init.apply(this, args);
+			if (def.init)
+			{
+				if (arguments.length > 1)
+				{
+					args = arguments;
+				}
+				def.init.apply(this, args);
+			}
 		};
 		
 		addDef(def, def, props, bind);
